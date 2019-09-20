@@ -46,8 +46,32 @@ Term VariableTerm::substitute(const Variable &v, const Term &t) const
     }
 }
 
+Term VariableTerm::substitute(const Substitution &s) const
+{
+    for (const auto & varTermPair : s)
+    {
+        if (m_var == varTermPair.first)
+        {
+            return varTermPair.second;
+        }
+    }
+    return std::const_pointer_cast<BaseTerm>(shared_from_this());
+}
+
 AnyType VariableTerm::eval(const LStructure &structure, const Valuation &valuation) const
 {
     UNUSED_ARG(structure);
     return valuation.getValue(m_var);
 }
+
+void VariableTerm::getConstants(ConstantSet &cs) const
+{
+    return;
+}
+
+void VariableTerm::getFunctions(FunctionSet &fs) const
+{
+    return;
+}
+
+

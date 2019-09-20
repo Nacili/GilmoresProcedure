@@ -14,6 +14,11 @@ Formula Exists::substitute(const Variable &v, const Term &t) const
     return substituteImpl<Exists>(v, t);
 }
 
+Formula Exists::substitute(const Substitution &s) const
+{
+    return substituteImpl<Exists>(s);
+}
+
 std::ostream &Exists::print(std::ostream &out) const
 {
     return printImpl(out, "E");
@@ -31,7 +36,7 @@ bool Exists::eval(const LStructure &structure, const Valuation &valuation) const
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -68,6 +73,11 @@ Formula Exists::skolem(Signature::Sptr s, VariablesSet &&vars) const
     {
         return std::make_shared<VariableTerm>(var);
     });
-    
+
     return m_op->substitute(m_var, std::make_shared<FunctionTerm>(s, replacementSymbol, terms))->skolem(s, std::move(vars));
+}
+
+Formula Exists::pullQuantifiers()
+{
+    return std::const_pointer_cast<BaseFormula>(shared_from_this());
 }

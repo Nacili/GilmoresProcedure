@@ -12,11 +12,15 @@ public:
     
     virtual Formula substitute(const Variable & v, const Term & t) const;
     
+    virtual Formula substitute(const Substitution &s) const;
+    
     virtual bool eval(const LStructure &structure, const Valuation &valuation) const;
     
     virtual Formula simplify() const;
     
     virtual Formula nnf() const;
+
+    virtual LiteralListList listDNF();
 };
 
 #endif // IMP_H

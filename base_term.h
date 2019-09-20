@@ -7,10 +7,13 @@
 
 #include <memory>
 #include <iostream>
+#include <map>
 
 class BaseTerm;
 
 using Term = std::shared_ptr<BaseTerm>;
+
+using Substitution = std::map<Variable, Term>;
 
 class BaseTerm : public std::enable_shared_from_this<BaseTerm>
 {
@@ -55,6 +58,8 @@ public:
      */
     virtual Term substitute(const Variable &v, const Term &t) const = 0;
     
+    virtual Term substitute(const Substitution &s) const = 0;
+    
     /**
      * @brief eval - racuna vrednost terma u tekucoj valuaciji i interpretaciji (rezultujuca vrednost je vrednost iz domena)
      * @param structure - konkretna interpretacija
@@ -67,8 +72,14 @@ public:
      * @brief ~BaseTerm destruktor
      */
     virtual ~BaseTerm();
+
+    // for Herbrand
+    virtual void getConstants(ConstantSet & cs) const = 0;
+    virtual void getFunctions(ConstantSet & fs) const = 0;
 };
 
 bool operator==(const Term &lhs, const Term &rhs);
+
+std::ostream& operator<<(std::ostream &out, const Term &t);
 
 #endif // BASETERM_H

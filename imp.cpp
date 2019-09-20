@@ -19,6 +19,11 @@ Formula Imp::substitute(const Variable &v, const Term &t) const
     return substituteImpl<Imp>(v, t);
 }
 
+Formula Imp::substitute(const Substitution &s) const
+{
+    return std::make_shared<Imp>(m_op1->substitute(s), m_op2->substitute(s));
+}
+
 bool Imp::eval(const LStructure &structure, const Valuation &valuation) const
 {
     return !m_op1->eval(structure, valuation) || m_op2->eval(structure, valuation);
@@ -48,5 +53,12 @@ Formula Imp::simplify() const
 
 Formula Imp::nnf() const
 {
-    return std::make_shared<Or>(std::make_shared<Not>(m_op1)->nnf(), m_op2->nnf());
+    GET_OPERANDS(op1, op2);
+    return std::make_shared<Or>(std::make_shared<Not>(op1)->nnf(), op2->nnf());
+}
+
+
+LiteralListList Imp::listDNF()
+{
+    throw std::runtime_error("You can't use DNF with IMP");
 }

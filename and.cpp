@@ -19,6 +19,11 @@ Formula And::substitute(const Variable &v, const Term &t) const
     return substituteImpl<And>(v, t);
 }
 
+Formula And::substitute(const Substitution &s) const
+{
+    return std::make_shared<And>(m_op1->substitute(s), m_op2->substitute(s));
+}
+
 bool And::eval(const LStructure &structure, const Valuation &valuation) const
 {
     return m_op1->eval(structure, valuation) && m_op2->eval(structure, valuation);
@@ -48,7 +53,8 @@ Formula And::simplify() const
 
 Formula And::nnf() const
 {
-    return std::make_shared<And>(m_op1->nnf(), m_op2->nnf());
+    GET_OPERANDS(op1, op2);
+    return std::make_shared<And>(op1->nnf(), op2->nnf());
 }
 
 Formula And::pullQuantifiers() const
@@ -75,7 +81,7 @@ Formula And::pullQuantifiers() const
                                                 )->pullQuantifiers());
         }
     }
-    else if (fop1)/*Vz (A(x->z) /\ B)*/
+    else if (fop1)
     {
         if (m_op2->hasVariable(fop1->variable(), true))
         {
@@ -90,7 +96,7 @@ Formula And::pullQuantifiers() const
                                                 fop1->operand(), m_op2)->pullQuantifiers());
         }
     }
-    else if (fop2) /* A /\ Vx B(x) */
+    else if (fop2)
     {
         if (m_op1->hasVariable(fop2->variable(), true))
         {
@@ -109,7 +115,7 @@ Formula And::pullQuantifiers() const
     
     const Exists *eop1 = BaseFormula::isOfType<Exists>(m_op1);
     const Exists *eop2 = BaseFormula::isOfType<Exists>(m_op2);
-    if (eop1)/* Ex A(x) /\ B */
+    if (eop1)
     {
         if (m_op2->hasVariable(eop1->variable(), true))
         {
@@ -147,4 +153,12 @@ Formula And::pullQuantifiers() const
 Formula And::prenex() const
 {
     return std::make_shared<And>(m_op1->prenex(), m_op2->prenex())->pullQuantifiers();
+}
+
+
+LiteralListList And::listDNF()
+{
+    LiteralListList ll1 = m_op1->listDNF();
+    LiteralListList ll2 = m_op2->listDNF();
+    return makePairs(ll1, ll2);
 }

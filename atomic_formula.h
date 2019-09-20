@@ -1,19 +1,25 @@
-#ifndef ATOMICFORMULA_H
-#define ATOMICFORMULA_H
+#ifndef ATOMIC_FORMULA_H
+#define ATOMIC_FORMULA_H
 
 #include "base_formula.h"
-#include "common.h"
+
 
 class AtomicFormula : public BaseFormula
 {
 public:
     AtomicFormula();
-    
-    virtual unsigned complexity() const;
-    
-    virtual void getVars(VariablesSet & vars, bool free) const;
-    
-    virtual Formula substitute(const Variable & v, const Term & t) const;
+
+
+    // BaseFormula interface
+public:
+    unsigned complexity() const;
+    void getVars(VariablesSet &vars, bool free) const;
+    // virtual void getConstants(ConstantSet & cts) const;
+    // virtual void getFunctions(FunctionSet & fs) const;
+    Formula substitute(const Variable &v, const Term &t) const;
+    virtual Formula nnf() const;
+    virtual Formula prenex();
+    virtual Formula pullQuantifiers();
 };
 
-#endif // ATOMICFORMULA_H
+#endif // ATOMIC_FORMULA_H

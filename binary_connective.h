@@ -7,6 +7,10 @@
     Formula op1, op2; \
     std::tie(op1, op2) = f->operands()
 
+#define GET_OPERANDS(x, y) \
+  Formula x, y; \
+  std::tie(x, y) = operands();
+
 class BinaryConnective : public BaseFormula
 {
 public:
@@ -17,6 +21,10 @@ public:
     virtual bool equalTo(const Formula & f) const;
   
     virtual void getVars(VariablesSet & vars, bool free = false) const;
+
+    virtual void getConstants(ConstantSet & cts) const;
+
+    virtual void getFunctions(FunctionSet & fs) const;
   
     inline std::pair<Formula, Formula> operands() const { return {m_op1, m_op2}; }
     

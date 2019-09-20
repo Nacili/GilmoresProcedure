@@ -19,6 +19,11 @@ Formula Iff::substitute(const Variable &v, const Term &t) const
     return substituteImpl<Iff>(v, t);
 }
 
+Formula Iff::substitute(const Substitution &s) const
+{
+    return std::make_shared<Iff>(m_op1->substitute(s), m_op2->substitute(s));
+}
+
 bool Iff::eval(const LStructure &structure, const Valuation &valuation) const
 {
     return m_op1->eval(structure, valuation) == m_op2->eval(structure, valuation);
@@ -52,11 +57,14 @@ Formula Iff::simplify() const
 
 Formula Iff::nnf() const
 {
-    return std::make_shared<And>(
-                std::make_shared<Or>(
-                    std::make_shared<Not>(m_op1)->nnf(), 
-                    m_op2->nnf()),
-                std::make_shared<Or>(
-                    m_op1->nnf(), 
-                    std::make_shared<Not>(m_op2)->nnf()));
+    GET_OPERANDS(op1, op2);
+
+    return std::make_shared<And>(std::make_shared<Or>(std::make_shared<Not>(op1)->nnf(), op2->nnf()),
+                                 std::make_shared<Or>(op1->nnf(), std::make_shared<Not>(op2)->nnf()));
+}
+
+
+LiteralListList Iff::listDNF()
+{
+    throw std::runtime_error("You can't use DNF with IFF");
 }

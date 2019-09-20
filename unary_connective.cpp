@@ -22,5 +22,17 @@ bool UnaryConnective::equalTo(const Formula &f) const
 
 void UnaryConnective::getVars(VariablesSet &vars, bool free) const
 {
-  m_op->getVars(vars, free);
+    m_op->getVars(vars, free);
 }
+
+void UnaryConnective::getConstants(ConstantSet &cts) const
+{
+    m_op->getConstants(cts);
+}
+
+void UnaryConnective::getFunctions(FunctionSet &fs) const
+{
+    m_op->getFunctions(fs);
+}
+
+

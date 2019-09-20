@@ -1,5 +1,7 @@
 #include "quantifier.h"
 
+#include <algorithm>
+
 uint64_t Quantifier::s_UniqueCounter = 0U;
 
 Quantifier::Quantifier(const Variable &var, const Formula &f)
@@ -33,9 +35,41 @@ void Quantifier::getVars(VariablesSet &vars, bool free) const
   vars.insert(tmp.cbegin(), tmp.cend());
 }
 
+void Quantifier::getConstants(ConstantSet &cts) const
+{
+    m_op->getConstants(cts);
+}
+
+void Quantifier::getFunctions(FunctionSet &fs) const
+{
+    m_op->getFunctions(fs);
+}
+
+
+Variable Quantifier::getUniqueVarName(const Formula &f, const std::vector<Term> &terms)
+{
+    Variable unique;
+    do {
+        unique = "uv" + std::to_string(s_UniqueCounter++);
+    } while (f->hasVariable(unique) ||
+             terms.cend() != std::find_if(terms.cbegin(),
+                                          terms.cend(),
+                                          [&](const Term &t)
+                                            { return t->hasVariable(unique); }
+                                       ));
+
+    return unique;
+}
+
 std::ostream &Quantifier::printImpl(std::ostream &out, const std::string &symbol) const
 {
   out << '(' << symbol << '.' << m_var << ")(";
   m_op->print(out);
   return out << ')';
+}
+
+
+LiteralListList Quantifier::listDNF()
+{
+    throw std::runtime_error("You can't use listDNF in formula with qauntifiers");
 }

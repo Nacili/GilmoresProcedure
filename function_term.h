@@ -25,7 +25,13 @@ public:
     
     virtual Term substitute(const Variable &v, const Term &t) const;
     
+    virtual Term substitute(const Substitution &s) const;
+    
     virtual AnyType eval(const LStructure &structure, const Valuation &valuation) const;
+
+    virtual void getConstants(ConstantSet & cs) const;
+
+    virtual void getFunctions(FunctionSet & fs) const;
 private:
     /**
      * @brief m_signature je signatura kojoj funkcijski simbol pripada

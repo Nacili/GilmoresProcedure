@@ -8,10 +8,10 @@
 FunctionTerm::FunctionTerm(Signature::Sptr signature, const FunctionSymbol &symbol, const std::vector<Term> &terms)
   : BaseTerm (), m_signature{signature}, m_symbol{symbol}, m_terms{terms}
 {
-  if (!m_signature->hasFunctionSymbol(m_symbol, (unsigned)m_terms.size()))
-  {
-      throw std::runtime_error{"Syntax error in construction of function term"};
-  }
+    if (!m_signature->hasFunctionSymbol(m_symbol, (unsigned)m_terms.size()))
+    {
+        throw std::runtime_error{"Syntax error in construction of function term"};
+    }
 }
 
 std::ostream &FunctionTerm::print(std::ostream &out) const
@@ -76,6 +76,17 @@ Term FunctionTerm::substitute(const Variable &v, const Term &t) const
   return std::make_shared<FunctionTerm>(m_signature, m_symbol, terms);
 }
 
+Term FunctionTerm::substitute(const Substitution &s) const
+{
+    std::vector<Term> modifiedTerms;
+    modifiedTerms.reserve(m_terms.size());
+    for (const Term & t : m_terms)
+    {
+        modifiedTerms.push_back(t->substitute(s));
+    }
+    return std::make_shared<FunctionTerm>(m_signature, m_symbol, modifiedTerms);
+}
+
 AnyType FunctionTerm::eval(const LStructure &structure, const Valuation &valuation) const
 {
     Function f = structure.getFunction(m_symbol);
@@ -87,3 +98,25 @@ AnyType FunctionTerm::eval(const LStructure &structure, const Valuation &valuati
     });
     return f->eval(termValues);
 }
+
+void FunctionTerm::getConstants(ConstantSet &cs) const
+{
+    if (m_terms.size() == 0) {
+            cs.insert(m_symbol);
+        } else {
+            for(unsigned i = 0; i < m_terms.size(); i++) {
+                m_terms[i]->getConstants(cs);
+            }
+    }
+}
+
+void FunctionTerm::getFunctions(FunctionSet &fs) const
+{
+    if (m_terms.size() != 0) {
+            fs.insert(m_symbol);
+        }
+        for(unsigned i = 0; i < m_terms.size(); i++) {
+            m_terms[i]->getFunctions(fs);
+        }
+}
+

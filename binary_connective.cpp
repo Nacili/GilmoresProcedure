@@ -28,6 +28,19 @@ void BinaryConnective::getVars(VariablesSet &vars, bool free) const
   m_op2->getVars(vars, free);
 }
 
+void BinaryConnective::getConstants(ConstantSet &cts) const
+{
+    m_op1->getConstants(cts);
+    m_op2->getConstants(cts);
+}
+
+void BinaryConnective::getFunctions(FunctionSet &fs) const
+{
+    m_op1->getFunctions(fs);
+    m_op2->getFunctions(fs);
+}
+
+
 Formula BinaryConnective::pullQuantifiers() const
 {
     /* Ako metod nije reimplementiran u potklasi bacamo izuzetak (npr. za Iff i Imp) */

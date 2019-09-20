@@ -25,6 +25,14 @@ bool Signature::hasFunctionSymbol(const FunctionSymbol &fsym, const Arity &ar) c
   }
 }
 
+FunctionSymbol Signature::getNewUniqueConstant() const
+{
+    if (Signature::s_UniqueCounter == MAX_UNIQUE_CTS)
+        throw "Max unique constants reached";
+
+    return _uniqueConstants[Signature::s_UniqueCounter++];
+}
+
 bool Signature::hasPredicateSymbol(const RelationSymbol &psym, const Arity &ar) const
 {
   auto it = m_predicates.find(psym);

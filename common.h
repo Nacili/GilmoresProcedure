@@ -10,6 +10,8 @@ using Variable = std::string;
 using FunctionSymbol = std::string;
 using RelationSymbol = std::string;
 using Arity = unsigned;
+using FunctionSet = std::unordered_set<FunctionSymbol>;
+using ConstantSet = std::unordered_set<FunctionSymbol>;
 using VariablesSet = std::unordered_set<Variable>;
 
 /* Reprezentacija bilo kog vrednosnog tipa */

@@ -15,6 +15,11 @@ Formula Forall::substitute(const Variable &v, const Term &t) const
     return substituteImpl<Forall>(v, t);
 }
 
+Formula Forall::substitute(const Substitution &s) const
+{
+    return substituteImpl<Forall>(s);
+}
+
 bool Forall::eval(const LStructure &structure, const Valuation &valuation) const
 {
     Valuation cpyValuation = valuation;
@@ -27,7 +32,7 @@ bool Forall::eval(const LStructure &structure, const Valuation &valuation) const
             return false;
         }
     }
-    
+
     return true;
 }
 
@@ -58,4 +63,9 @@ Formula Forall::skolem(Signature::Sptr s, VariablesSet &&vars) const
 {
     vars.insert(m_var);
     return std::make_shared<Forall>(m_var, m_op->skolem(s, std::move(vars)));
+}
+
+Formula Forall::pullQuantifiers()
+{
+    return std::const_pointer_cast<BaseFormula>(shared_from_this());
 }

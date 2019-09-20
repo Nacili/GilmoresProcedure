@@ -5,6 +5,7 @@
 
 #include <unordered_map>
 #include <memory>
+#include <vector>
 
 class Signature
 {
@@ -24,9 +25,13 @@ public:
     bool hasPredicateSymbol(const RelationSymbol &psym, const Arity &ar) const;
     
     FunctionSymbol getUniqueFunctionSymbol() const;
+
+    const size_t MAX_UNIQUE_CTS = 100;
+    FunctionSymbol getNewUniqueConstant() const;
 private:
     Map m_functions;
     Map m_predicates;
+    std::vector<FunctionSymbol> _uniqueConstants;
 };
 
 #endif // SIGNATURE_H

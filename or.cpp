@@ -19,6 +19,11 @@ Formula Or::substitute(const Variable &v, const Term &t) const
     return substituteImpl<Or>(v, t);
 }
 
+Formula Or::substitute(const Substitution &s) const
+{
+    return std::make_shared<Or>(m_op1->substitute(s), m_op2->substitute(s));
+}
+
 bool Or::eval(const LStructure &structure, const Valuation &valuation) const
 {
     return m_op1->eval(structure, valuation) || m_op2->eval(structure, valuation);
@@ -48,7 +53,8 @@ Formula Or::simplify() const
 
 Formula Or::nnf() const
 {
-    return std::make_shared<Or>(m_op1->nnf(), m_op2->nnf());
+    GET_OPERANDS(op1, op2);
+    return std::make_shared<Or>(op1->nnf(), op2->nnf());
 }
 
 Formula Or::pullQuantifiers() const
@@ -145,5 +151,23 @@ Formula Or::pullQuantifiers() const
 
 Formula Or::prenex() const
 {
+    Formula pr_op1 = m_op1->prenex();
+    Formula pr_op2 = m_op2->prenex();
     return std::make_shared<Or>(m_op1->prenex(), m_op2->prenex())->pullQuantifiers();
+}
+
+template<typename ListType>
+ListType concatLists(const ListType &l1, const ListType &l2)
+{
+    ListType result;
+    result.reserve(l1.size() + l2.size());
+    std::copy(l1.cbegin(), l1.cbegin(), std::back_inserter(result));
+    std::copy(l2.cbegin(), l2.cend(), std::back_inserter(result));
+    return result;
+}
+
+LiteralListList Or::listDNF()
+{
+    GET_OPERANDS(op1, op2);
+    return concatLists(op1->listDNF(), op2->listDNF());
 }

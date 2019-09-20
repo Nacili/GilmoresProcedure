@@ -19,8 +19,14 @@ public:
     virtual bool hasVariable(const Variable &v) const;
     
     virtual Term substitute(const Variable &v, const Term &t) const;
+
+    virtual Term substitute(const Substitution &s) const;
     
     virtual AnyType eval(const LStructure &structure, const Valuation &valuation) const;
+
+    virtual void getConstants(ConstantSet & cs) const;
+
+    virtual void getFunctions(FunctionSet & fs) const;
 private:
     /**
      * @brief m_var je promenljiva koja odgovara termu, njena vrednost se cita iz valuacije
